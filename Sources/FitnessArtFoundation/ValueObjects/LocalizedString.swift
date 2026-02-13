@@ -1,20 +1,24 @@
 import Foundation
 
-nonisolated struct LocalizedString: Sendable, Codable, Hashable {
-    static let empty = LocalizedString(translations: [:])
+public struct LocalizedString: Sendable, Codable, Hashable {
+    public static let empty = LocalizedString(translations: [:])
 
-    let translations: [String: String]
+    public let translations: [String: String]
 
-    func string(in lang: String? = nil) -> String {
+    public init(translations: [String: String]) {
+        self.translations = translations
+    }
+
+    public func string(in lang: String? = nil) -> String {
         return translations[lang ?? defaultLanguageCode] ?? ""
     }
 
-    func string(for locale: Locale?) -> String {
+    public func string(for locale: Locale?) -> String {
         let languageCode = locale?.language.languageCode?.identifier ?? defaultLanguageCode
         return translations[languageCode] ?? ""
     }
 
-    var defaultLanguageCode: String {
+    public var defaultLanguageCode: String {
         Locale.preferredLanguages.first?
             .components(separatedBy: "-").first ?? "en"
     }
@@ -24,7 +28,7 @@ nonisolated struct LocalizedString: Sendable, Codable, Hashable {
 
 extension LocalizedString {
 
-    func copyWith(string: String, for locale: Locale) -> LocalizedString {
+    public func copyWith(string: String, for locale: Locale) -> LocalizedString {
         var newValues = translations
         if let languageCode = locale.language.languageCode?.identifier {
             newValues[languageCode] = string
@@ -37,17 +41,17 @@ extension LocalizedString {
 // MARK: - Collection Conformance
 
 extension LocalizedString: Collection {
-    typealias Index = [String: String].Index
-    typealias Element = [String: String].Element
+    public typealias Index = [String: String].Index
+    public typealias Element = [String: String].Element
 
-    var startIndex: Index { translations.startIndex }
-    var endIndex: Index { translations.endIndex }
+    public var startIndex: Index { translations.startIndex }
+    public var endIndex: Index { translations.endIndex }
 
-    subscript(position: Index) -> Element {
+    public subscript(position: Index) -> Element {
         return translations[position]
     }
 
-    func index(after i: Index) -> Index {
+    public func index(after i: Index) -> Index {
         return translations.index(after: i)
     }
 
@@ -56,13 +60,13 @@ extension LocalizedString: Collection {
 // MARK: - Codable
 
 extension LocalizedString {
-    nonisolated init(from decoder: Decoder) throws {
+    public init(from decoder: Decoder) throws {
         let container = try decoder.singleValueContainer()
         let dict = try container.decode([String: String].self)
         self.translations = dict
     }
 
-    nonisolated func encode(to encoder: Encoder) throws {
+    public func encode(to encoder: Encoder) throws {
         var container = encoder.singleValueContainer()
         try container.encode(translations)
     }

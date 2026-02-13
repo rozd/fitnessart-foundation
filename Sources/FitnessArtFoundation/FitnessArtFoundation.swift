@@ -1,2 +1,2 @@
-// The Swift Programming Language
-// https://docs.swift.org/swift-book
+// FitnessArtFoundation
+// Shared domain value objects for FitnessArt iOS and Vapor projects.

@@ -1,20 +1,25 @@
 import Foundation
 
-nonisolated struct ValidityPeriod: Sendable, Equatable, Hashable, Codable {
-    let amount: Int
-    let unit: Calendar.Component
+public struct ValidityPeriod: Sendable, Equatable, Hashable, Codable {
+    public let amount: Int
+    public let unit: Calendar.Component
+
+    public init(amount: Int, unit: Calendar.Component) {
+        self.amount = amount
+        self.unit = unit
+    }
 }
 
 extension ValidityPeriod {
-    static func days(_ amount: Int) -> ValidityPeriod {
+    public static func days(_ amount: Int) -> ValidityPeriod {
         ValidityPeriod(amount: amount, unit: .day)
     }
 
-    static func weeks(_ amount: Int) -> ValidityPeriod {
+    public static func weeks(_ amount: Int) -> ValidityPeriod {
         ValidityPeriod(amount: amount, unit: .weekOfMonth)
     }
 
-    static func months(_ amount: Int) -> ValidityPeriod {
+    public static func months(_ amount: Int) -> ValidityPeriod {
         ValidityPeriod(amount: amount, unit: .month)
     }
 }
@@ -23,7 +28,7 @@ extension ValidityPeriod {
 
 extension ValidityPeriod: Identifiable {
 
-    var id: String {
+    public var id: String {
         "\(amount)-\(unit)"
     }
 }
@@ -37,7 +42,7 @@ extension ValidityPeriod {
         case unit
     }
 
-    nonisolated init(from decoder: Decoder) throws {
+    public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         amount = try container.decode(Int.self, forKey: .amount)
         let unitString = try container.decode(String.self, forKey: .unit)
@@ -55,7 +60,7 @@ extension ValidityPeriod {
         }
     }
 
-    nonisolated func encode(to encoder: Encoder) throws {
+    public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(amount, forKey: .amount)
         let unitString: String
@@ -79,11 +84,11 @@ extension ValidityPeriod {
 
 extension ValidityPeriod {
 
-    var labelForDisplay: String {
+    public var labelForDisplay: String {
         unit.labelForDisplay
     }
 
-    var descriptionForDisplay: String {
+    public var descriptionForDisplay: String {
         "\(amount) \(labelForDisplay)"
     }
 
@@ -91,7 +96,7 @@ extension ValidityPeriod {
 
 extension Calendar.Component {
 
-    var labelForDisplay: String {
+    public var labelForDisplay: String {
         switch self {
         case .day:
             return "Days"

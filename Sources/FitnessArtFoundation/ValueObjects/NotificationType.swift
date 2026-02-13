@@ -1,4 +1,4 @@
-enum NotificationType: String, Codable, Sendable {
+public enum NotificationType: String, Codable, Sendable {
     case bookingConfirmed = "booking_confirmed"
     case bookingCancelled = "booking_cancelled"
     case waitlistJoined = "waitlist_joined"
