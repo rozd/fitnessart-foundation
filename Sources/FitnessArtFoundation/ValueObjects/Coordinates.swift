@@ -18,11 +18,11 @@ public struct Coordinates: Codable, Sendable, Equatable {
 }
 
 extension Coordinates {
-    enum Error {
+    public enum Error {
         case invalidLatitude(Double)
         case invalidLongitude(Double)
 
-        var errorDescription: String? {
+        public var errorDescription: String? {
             switch self {
             case .invalidLatitude(let lat):
                 return "Latitude must be between -90 and 90, got \(lat)"

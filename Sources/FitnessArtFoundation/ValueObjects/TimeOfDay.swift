@@ -50,11 +50,11 @@ public struct TimeOfDay: Sendable, Equatable, Hashable, Codable, Comparable {
 }
 
 extension TimeOfDay {
-    enum Error {
+    public enum Error {
         case invalidHour(Int)
         case invalidMinute(Int)
 
-        var errorDescription: String? {
+        public var errorDescription: String? {
             switch self {
             case .invalidHour(let h):
                 return "Hour must be 0-23, got \(h)"
