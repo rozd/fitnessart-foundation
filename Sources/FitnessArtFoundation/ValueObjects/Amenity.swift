@@ -16,3 +16,7 @@ extension Amenity: Equatable {
         lhs.systemImageName == rhs.systemImageName
     }
 }
+
+extension Amenity: Hashable {
+    
+}
