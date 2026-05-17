@@ -9,3 +9,10 @@ public struct Amenity: Sendable, Codable {
         self.description = description
     }
 }
+
+extension Amenity: Equatable {
+
+    public static func == (lhs: Amenity, rhs: Amenity) -> Bool {
+        lhs.systemImageName == rhs.systemImageName
+    }
+}
