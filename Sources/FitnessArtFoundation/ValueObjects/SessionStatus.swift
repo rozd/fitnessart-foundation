@@ -1,4 +1,4 @@
-public enum WorkoutStatus: String, Codable, Sendable {
+public enum SessionStatus: String, Codable, Sendable {
     case scheduled
     case ongoing
     case completed

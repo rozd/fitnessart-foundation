@@ -803,19 +803,19 @@ struct NotificationTypeTests {
     }
 }
 
-@Suite("WorkoutStatus")
-struct WorkoutStatusTests {
+@Suite("SessionStatus")
+struct SessionStatusTests {
 
     @Test("All cases encode to/from raw strings", arguments: [
-        (WorkoutStatus.scheduled, "scheduled"),
-        (WorkoutStatus.ongoing, "ongoing"),
-        (WorkoutStatus.completed, "completed"),
-        (WorkoutStatus.cancelled, "cancelled"),
+        (SessionStatus.scheduled, "scheduled"),
+        (SessionStatus.ongoing, "ongoing"),
+        (SessionStatus.completed, "completed"),
+        (SessionStatus.cancelled, "cancelled"),
     ])
-    func codableRoundTrip(status: WorkoutStatus, expectedRaw: String) throws {
+    func codableRoundTrip(status: SessionStatus, expectedRaw: String) throws {
         #expect(status.rawValue == expectedRaw)
         let data = try JSONEncoder().encode(status)
-        let decoded = try JSONDecoder().decode(WorkoutStatus.self, from: data)
+        let decoded = try JSONDecoder().decode(SessionStatus.self, from: data)
         #expect(decoded == status)
     }
 }
