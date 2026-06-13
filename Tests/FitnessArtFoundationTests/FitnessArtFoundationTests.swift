@@ -605,6 +605,79 @@ struct WorkoutAllowanceTests {
     }
 }
 
+// MARK: - WorkoutCapacities Tests
+
+@Suite("WorkoutCapacities")
+struct WorkoutCapacitiesTests {
+
+    @Test("Codable round-trip — encodes as a flat { id: Int } map")
+    func codableRoundTrip() throws {
+        let capacities = WorkoutCapacities(["yoga": 10, "pilates": 12])
+        let data = try JSONEncoder().encode(capacities)
+        let decoded = try JSONDecoder().decode(WorkoutCapacities.self, from: data)
+        #expect(decoded == capacities)
+
+        // The encoded shape must be the flat map, NOT { "storage": {...} }.
+        let object = try JSONSerialization.jsonObject(with: data) as? [String: Int]
+        #expect(object == ["yoga": 10, "pilates": 12])
+    }
+
+    @Test("decodes the existing Firestore shape { \"yoga\": 10 }")
+    func decodesFirestoreShape() throws {
+        let data = Data("{\"yoga\":10}".utf8)
+        let decoded = try JSONDecoder().decode(WorkoutCapacities.self, from: data)
+        #expect(decoded.offeredWorkoutIds == ["yoga"])
+        #expect(decoded.capacity(forWorkoutId: "yoga") == 10)
+    }
+
+    @Test("empty map round-trips to .empty")
+    func emptyRoundTrip() throws {
+        let data = Data("{}".utf8)
+        let decoded = try JSONDecoder().decode(WorkoutCapacities.self, from: data)
+        #expect(decoded == .empty)
+        #expect(decoded.isEmpty)
+        let reEncoded = try JSONEncoder().encode(WorkoutCapacities.empty)
+        #expect(String(data: reEncoded, encoding: .utf8) == "{}")
+    }
+
+    @Test("offeredWorkoutIds returns the keys")
+    func offeredWorkoutIds() {
+        let capacities = WorkoutCapacities(["yoga": 10, "pilates": 12])
+        #expect(capacities.offeredWorkoutIds == ["yoga", "pilates"])
+    }
+
+    @Test("capacity(forWorkoutId:) returns the value or nil")
+    func capacityLookup() {
+        let capacities = WorkoutCapacities(["yoga": 10])
+        #expect(capacities.capacity(forWorkoutId: "yoga") == 10)
+        #expect(capacities.capacity(forWorkoutId: "absent") == nil)
+    }
+
+    @Test("conducts(workoutId:) and isEmpty")
+    func conductsAndEmpty() {
+        let capacities = WorkoutCapacities(["pilates": 12])
+        #expect(capacities.conducts(workoutId: "pilates"))
+        #expect(!capacities.conducts(workoutId: "yoga"))
+        #expect(WorkoutCapacities.empty.isEmpty)
+    }
+
+    @Test("asDictionary exposes the underlying map for Model/DTO mapping")
+    func asDictionary() {
+        let capacities = WorkoutCapacities(["yoga": 10, "pilates": 12])
+        #expect(capacities.asDictionary == ["yoga": 10, "pilates": 12])
+    }
+
+    @Test("Equatable & Hashable")
+    func equatableHashable() {
+        let a = WorkoutCapacities(["yoga": 10])
+        let b = WorkoutCapacities(["yoga": 10])
+        #expect(a == b)
+        #expect(a.hashValue == b.hashValue)
+        let set: Set<WorkoutCapacities> = [a, b, .empty]
+        #expect(set.count == 2)
+    }
+}
+
 // MARK: - LocalizedString Tests
 
 @Suite("LocalizedString")
