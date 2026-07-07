@@ -845,12 +845,53 @@ struct CancellationTypeTests {
     @Test("All cases encode to/from raw strings", arguments: [
         (CancellationType.timely, "timely"),
         (CancellationType.late, "late"),
+        (CancellationType.insufficientCredits, "insufficient_credits"),
     ])
     func codableRoundTrip(type: CancellationType, expectedRaw: String) throws {
         #expect(type.rawValue == expectedRaw)
         let data = try JSONEncoder().encode(type)
+        let jsonString = String(data: data, encoding: .utf8)!
+        #expect(jsonString == "\"\(expectedRaw)\"")
         let decoded = try JSONDecoder().decode(CancellationType.self, from: data)
         #expect(decoded == type)
+    }
+}
+
+@Suite("FreezeTimePolicy")
+struct FreezeTimePolicyTests {
+
+    @Test("Standard policy freezes one hour before start")
+    func standardLeadTime() {
+        #expect(FreezeTimePolicy.standard.leadTime == 60 * 60)
+    }
+
+    @Test("Freeze time is start minus lead time")
+    func freezeTime() {
+        let start = Date(timeIntervalSince1970: 1_700_000_000)
+        let policy = FreezeTimePolicy.standard
+        #expect(policy.freezeTime(sessionStart: start) == start.addingTimeInterval(-3600))
+    }
+
+    @Test("Frozen exactly at the freeze instant and after, not before", arguments: [
+        (-3601.0, false),  // one second before the freeze instant
+        (-3600.0, true),   // exactly at the freeze instant counts as frozen
+        (-1800.0, true),   // inside the freeze window
+        (0.0, true),       // at session start
+    ])
+    func isFrozenBoundary(offsetFromStart: TimeInterval, expected: Bool) {
+        let start = Date(timeIntervalSince1970: 1_700_000_000)
+        let now = start.addingTimeInterval(offsetFromStart)
+        #expect(FreezeTimePolicy.standard.isFrozen(sessionStart: start, now: now) == expected)
+    }
+
+    @Test("Wire format is {\"leadTime\":seconds}")
+    func codableRoundTrip() throws {
+        let policy = FreezeTimePolicy(leadTime: 3600)
+        let data = try JSONEncoder().encode(policy)
+        let jsonString = String(data: data, encoding: .utf8)!
+        #expect(jsonString == #"{"leadTime":3600}"#)
+        let decoded = try JSONDecoder().decode(FreezeTimePolicy.self, from: data)
+        #expect(decoded == policy)
     }
 }
 
