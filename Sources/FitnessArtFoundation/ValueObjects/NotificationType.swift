@@ -3,6 +3,7 @@ public enum NotificationType: String, Codable, Sendable {
     case bookingCancelled = "booking_cancelled"
     case waitlistJoined = "waitlist_joined"
     case waitlistPromoted = "waitlist_promoted"
+    case sessionAdded = "session_added"
     case sessionCancelled = "session_cancelled"
     case sessionChanged = "session_changed"
     case sessionReminder = "session_reminder"
