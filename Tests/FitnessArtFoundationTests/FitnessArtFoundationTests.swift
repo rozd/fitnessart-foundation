@@ -898,11 +898,12 @@ struct FreezeTimePolicyTests {
 @Suite("NotificationType")
 struct NotificationTypeTests {
 
-    @Test("All 7 cases with raw string values", arguments: [
+    @Test("All 8 cases with raw string values", arguments: [
         (NotificationType.bookingConfirmed, "booking_confirmed"),
         (NotificationType.bookingCancelled, "booking_cancelled"),
         (NotificationType.waitlistJoined, "waitlist_joined"),
         (NotificationType.waitlistPromoted, "waitlist_promoted"),
+        (NotificationType.sessionAdded, "session_added"),
         (NotificationType.sessionCancelled, "session_cancelled"),
         (NotificationType.sessionChanged, "session_changed"),
         (NotificationType.sessionReminder, "session_reminder"),
